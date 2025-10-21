@@ -1,0 +1,358 @@
+{
+  "nbformat": 4,
+  "nbformat_minor": 0,
+  "metadata": {
+    "colab": {
+      "provenance": [],
+      "authorship_tag": "ABX9TyM5nAxYEDtHNem3H9edQ4hG",
+      "include_colab_link": true
+    },
+    "kernelspec": {
+      "name": "python3",
+      "display_name": "Python 3"
+    },
+    "language_info": {
+      "name": "python"
+    }
+  },
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "view-in-github",
+        "colab_type": "text"
+      },
+      "source": [
+        "<a href=\"https://colab.research.google.com/github/priyanka0178885547/ML-LAB/blob/main/Week-9\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "lp9vJhb8ETnU",
+        "outputId": "b3705d15-80ad-486f-f530-1cad346a6677"
+      },
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "0.9990889488055994\n"
+          ]
+        }
+      ],
+      "source": [
+        "import numpy as np\n",
+        "def sigmoid(x):\n",
+        "  return 1 / (1 + np.exp(-x))\n",
+        "class Neuron:\n",
+        "  def __init__(self, weights, bias):\n",
+        "    self.weights = weights\n",
+        "    self.bias = bias\n",
+        "\n",
+        "  def feedforward(self, inputs):\n",
+        "    total = np.dot(self.weights, inputs) + self.bias\n",
+        "    return sigmoid(total)\n",
+        "\n",
+        "weights = np.array([0, 1])\n",
+        "bias = 4\n",
+        "n = Neuron(weights, bias)\n",
+        "\n",
+        "x = np.array([2, 3])\n",
+        "print(n.feedforward(x))\n"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "class Perceptron:\n",
+        "   def __init__(self, learning_rate=0.1, epochs=100):\n",
+        "      self.learning_rate = learning_rate\n",
+        "      self.epochs = epochs\n",
+        "      self.weights = None\n",
+        "      self.bias = None\n",
+        "   def step_function(self, x):\n",
+        "      return np.where(x >= 0, 1, 0)\n",
+        "   def fit(self, X, y):\n",
+        "      n_samples, n_features = X.shape\n",
+        "      self.weights = np.zeros(n_features)\n",
+        "      self.bias = 0\n",
+        "      for _ in range(self.epochs):\n",
+        "         for i in range(n_samples):\n",
+        "            linear_output = np.dot(self.weights, X[i]) + self.bias\n",
+        "            y_pred = self.step_function(linear_output)\n",
+        "\n",
+        "            update = self.learning_rate * (y[i] - y_pred)\n",
+        "            self.weights += update * X[i]\n",
+        "            self.bias += update\n",
+        "\n",
+        "   def predict(self, X):\n",
+        "      linear_output = np.dot(X, self.weights) + self.bias\n",
+        "      y_pred = self.step_function(linear_output)\n",
+        "      return y_pred\n",
+        "X = np.array([[0, 0], [0, 1], [1, 0], [1, 1]])\n",
+        "#y = np.array([0, 0, 0, 1]) and\n",
+        "#y = np.array([0, 0, 0, 1]) or\n",
+        "y=np.array([0,1,1,0])\n",
+        "perceptron = Perceptron(learning_rate=0.1, epochs=10)\n",
+        "perceptron.fit(X, y)\n",
+        "test_data = np.array([[1, 1], [0, 1]])\n",
+        "predictions = perceptron.predict(test_data)\n",
+        "print(predictions)"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "IlWi_9vtNtP2",
+        "outputId": "0b57e7b4-998f-41c9-9418-f4b5191ab4b9"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "[0 1]\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "\n",
+        "from sklearn.linear_model import Perceptron\n",
+        "from sklearn.datasets import load_iris\n",
+        "from sklearn.model_selection import train_test_split\n",
+        "from sklearn.metrics import accuracy_score\n",
+        "iris = load_iris()\n",
+        "X_train, X_test, y_train, y_test = train_test_split(iris.data, iris.target, test_size=0.3, random_state=0)\n",
+        "perceptron = Perceptron(alpha=0.1)\n",
+        "perceptron.fit(X_train, y_train)\n",
+        "y_pred = perceptron.predict(X_test)\n",
+        "accuracy = accuracy_score(y_test, y_pred)\n",
+        "print(\"Accuracy:\", accuracy)\n"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "1Guym6h_Vies",
+        "outputId": "aa6487e7-f75d-495a-95eb-94acddaa8a30"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Accuracy: 0.8\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "import sklearn.datasets as skl_data\n",
+        "data, labels = skl_data.fetch_openml('mnist_784', version=1, return_X_y=True)\n",
+        "print(data.shape)\n",
+        "data.head()\n",
+        "data = data / 255.0\n",
+        "data\n",
+        "labels\n",
+        "from sklearn.model_selection import train_test_split\n",
+        "X_train, X_test, y_train, y_test = train_test_split(data, labels, test_size=.10, random_state=42, stratify=labels)\n",
+        "print(X_train.shape)\n",
+        "print(X_test.shape)\n",
+        "import sklearn.neural_network as skl_nn\n",
+        "mlp = skl_nn.MLPClassifier(hidden_layer_sizes=(50), max_iter=50, verbose=1, random_state=1)\n",
+        "mlp.fit(X_train,y_train)\n",
+        "print(\"Training set score\", mlp.score(X_train, y_train))\n",
+        "print(\"Testing set score\", mlp.score(X_test, y_test))\n",
+        "index = 350\n",
+        "test_digit = X_test.iloc[index].to_numpy().reshape(1,784)\n",
+        "test_digit_prediciton = mlp.predict(test_digit)[0]\n",
+        "print(\"Predicted value\",test_digit_prediciton)\n",
+        "print(\"Actual value\",y_test.iloc[index])"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "gTm7DwZcYCgo",
+        "outputId": "7e9850d0-67fb-41bc-ca56-fc4d4f703acd"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "(70000, 784)\n",
+            "(63000, 784)\n",
+            "(7000, 784)\n",
+            "Iteration 1, loss = 0.50240991\n",
+            "Iteration 2, loss = 0.24293823\n",
+            "Iteration 3, loss = 0.19396647\n",
+            "Iteration 4, loss = 0.16213879\n",
+            "Iteration 5, loss = 0.14071148\n",
+            "Iteration 6, loss = 0.12341883\n",
+            "Iteration 7, loss = 0.10922166\n",
+            "Iteration 8, loss = 0.09774355\n",
+            "Iteration 9, loss = 0.08919639\n",
+            "Iteration 10, loss = 0.08139225\n",
+            "Iteration 11, loss = 0.07540877\n",
+            "Iteration 12, loss = 0.06954664\n",
+            "Iteration 13, loss = 0.06361726\n",
+            "Iteration 14, loss = 0.05979103\n",
+            "Iteration 15, loss = 0.05585580\n",
+            "Iteration 16, loss = 0.05202626\n",
+            "Iteration 17, loss = 0.04899432\n",
+            "Iteration 18, loss = 0.04561763\n",
+            "Iteration 19, loss = 0.04281492\n",
+            "Iteration 20, loss = 0.04050308\n",
+            "Iteration 21, loss = 0.03787670\n",
+            "Iteration 22, loss = 0.03558628\n",
+            "Iteration 23, loss = 0.03292704\n",
+            "Iteration 24, loss = 0.03132445\n",
+            "Iteration 25, loss = 0.02988745\n",
+            "Iteration 26, loss = 0.02857582\n",
+            "Iteration 27, loss = 0.02623057\n",
+            "Iteration 28, loss = 0.02454969\n",
+            "Iteration 29, loss = 0.02335991\n",
+            "Iteration 30, loss = 0.02190347\n",
+            "Iteration 31, loss = 0.02054652\n",
+            "Iteration 32, loss = 0.01955444\n",
+            "Iteration 33, loss = 0.01806062\n",
+            "Iteration 34, loss = 0.01723213\n",
+            "Iteration 35, loss = 0.01601015\n",
+            "Iteration 36, loss = 0.01543006\n",
+            "Iteration 37, loss = 0.01425774\n",
+            "Iteration 38, loss = 0.01361097\n",
+            "Iteration 39, loss = 0.01272899\n",
+            "Iteration 40, loss = 0.01192553\n",
+            "Iteration 41, loss = 0.01160828\n",
+            "Iteration 42, loss = 0.01075935\n",
+            "Iteration 43, loss = 0.00983147\n",
+            "Iteration 44, loss = 0.00952984\n",
+            "Iteration 45, loss = 0.00876814\n",
+            "Iteration 46, loss = 0.00864342\n",
+            "Iteration 47, loss = 0.00796637\n",
+            "Iteration 48, loss = 0.00720160\n",
+            "Iteration 49, loss = 0.00758951\n",
+            "Iteration 50, loss = 0.00681590\n"
+          ]
+        },
+        {
+          "output_type": "stream",
+          "name": "stderr",
+          "text": [
+            "/usr/local/lib/python3.12/dist-packages/sklearn/neural_network/_multilayer_perceptron.py:691: ConvergenceWarning: Stochastic Optimizer: Maximum iterations (50) reached and the optimization hasn't converged yet.\n",
+            "  warnings.warn(\n"
+          ]
+        },
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Training set score 0.9985079365079365\n",
+            "Testing set score 0.97\n",
+            "Predicted value 4\n",
+            "Actual value 4\n"
+          ]
+        },
+        {
+          "output_type": "stream",
+          "name": "stderr",
+          "text": [
+            "/usr/local/lib/python3.12/dist-packages/sklearn/utils/validation.py:2739: UserWarning: X does not have valid feature names, but MLPClassifier was fitted with feature names\n",
+            "  warnings.warn(\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "import numpy as np\n",
+        "\n",
+        "import numpy as np\n",
+        "\n",
+        "# --- Activation Function ---\n",
+        "def sigmoid(x):\n",
+        "    \"\"\"Sigmoid activation function: f(x) = 1 / (1 + e^(-x))\"\"\"\n",
+        "    return 1 / (1 + np.exp(-x))\n",
+        "# --- Neuron Class ---\n",
+        "class Neuron:\n",
+        "    def __init__(self, weights, bias):\n",
+        "        self.weights = weights\n",
+        "        self.bias = bias\n",
+        "\n",
+        "    def feedforward(self, inputs):\n",
+        "        \"\"\"Compute neuron output using weights, bias, and activation function.\"\"\"\n",
+        "        total = np.dot(self.weights, inputs) + self.bias\n",
+        "        return sigmoid(total)\n",
+        "class OurNeuralNetwork:\n",
+        "  '''\n",
+        "  A neural network with:\n",
+        "    - 2 inputs\n",
+        "    - a hidden layer with 2 neurons (h1, h2)\n",
+        "    - an output layer with 1 neuron (o1)\n",
+        "  Each neuron has the same weights and bias:\n",
+        "    - w = [0, 1]\n",
+        "    - b = 0\n",
+        "  '''\n",
+        "  def __init__(self):\n",
+        "    weights = np.array([0, 1])\n",
+        "    self.h1 = Neuron(weights, bias)\n",
+        "    self.h2 = Neuron(weights, bias)\n",
+        "    self.o1 = Neuron(weights, bias)\n",
+        "\n",
+        "  def feedforward(self, x):\n",
+        "    out_h1 = self.h1.feedforward(x)\n",
+        "    out_h2 = self.h2.feedforward(x)\n",
+        "\n",
+        "    # The inputs for o1 are the outputs from h1 and h2\n",
+        "    out_o1 = self.o1.feedforward(np.array([out_h1, out_h2]))\n",
+        "\n",
+        "    return out_o1\n",
+        "\n",
+        "network = OurNeuralNetwork()\n",
+        "x = np.array([2, 3])\n",
+        "print(network.feedforward(x))"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "LUXuDOKQZCmO",
+        "outputId": "634fccad-3f53-43c8-d43c-6295af80b1b1"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "0.9933010896328802\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [],
+      "metadata": {
+        "id": "cpLZHJblZYBu"
+      },
+      "execution_count": null,
+      "outputs": []
+    }
+  ]
+}
